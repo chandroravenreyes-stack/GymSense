@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple GymSense Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #556B2F;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #6B8E23;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <h1>🏋️ GymSense Simple Test</h1>
+        <p>This is a minimal test to check if the server is working.</p>
+        <div id="status">Testing...</div>
+    </div>
+
+    <div class="test-box">
+        <h2>Navigation Test</h2>
+        <a href="login.html" class="button">Go to Login</a>
+        <a href="index.html" class="button">Go to Main App</a>
+        <a href="debug.html" class="button">Go to Debug</a>
+    </div>
+
+    <div class="test-box">
+        <h2>File Test Results</h2>
+        <div id="file-results">Loading...</div>
+    </div>
+
+    <script>
+        console.log('🧪 Simple test page loaded');
+        
+        document.getElementById('status').innerHTML = '<span class="success">✅ HTML and JavaScript working!</span>';
+        
+        // Test basic file loading
+        const testFiles = ['styles/main.css', 'js/auth.js', 'manifest.json'];
+        let results = '';
+        
+        async function testBasicFiles() {
+            for (const file of testFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        results += `<div class="success">✅ ${file} - OK</div>`;
+                    } else {
+                        results += `<div class="error">❌ ${file} - Error ${response.status}</div>`;
+                    }
+                } catch (error) {
+                    results += `<div class="error">❌ ${file} - ${error.message}</div>`;
+                }
+            }
+            document.getElementById('file-results').innerHTML = results;
+        }
+        
+        testBasicFiles();
+        
+        // Test localStorage
+        try {
+            localStorage.setItem('test', 'working');
+            const test = localStorage.getItem('test');
+            localStorage.removeItem('test');
+            console.log('✅ localStorage working');
+        } catch (error) {
+            console.error('❌ localStorage error:', error);
+        }
+    </script>
+</body>
+</html>

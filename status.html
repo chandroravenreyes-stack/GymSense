@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymSense - System Status</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #556B2F 0%, #6B8E23 50%, #8FBC8F 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .status-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .status-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .status-card h3 {
+            color: #556B2F;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-label {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .status-value {
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .status-ok {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .quick-links {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .quick-links h3 {
+            color: #556B2F;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .link-btn {
+            display: block;
+            padding: 1rem;
+            background: linear-gradient(135deg, #556B2F, #6B8E23);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(85, 107, 47, 0.2);
+        }
+        
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(85, 107, 47, 0.3);
+        }
+        
+        .console-output {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #556B2F;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .refresh-btn {
+            background: #556B2F;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            background: #6B8E23;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 GymSense</h1>
+            <p>System Status & Diagnostics</p>
+        </div>
+        
+        <div class="status-grid">
+            <div class="status-card">
+                <h3>🌐 Server Status</h3>
+                <div class="status-item">
+                    <span class="status-label">HTTP Server</span>
+                    <span class="status-value status-ok" id="server-status">✅ Running</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Port</span>
+                    <span class="status-value status-ok">8080</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Protocol</span>
+                    <span class="status-value status-ok">HTTP/1.1</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Response Time</span>
+                    <span class="status-value" id="response-time">Testing...</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>📁 File System</h3>
+                <div id="file-status">
+                    <div class="loading"></div> Testing files...
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>🎨 Styling</h3>
+                <div id="css-status">
+                    <div class="loading"></div> Testing CSS...
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>⚙️ JavaScript</h3>
+                <div id="js-status">
+                    <div class="loading"></div> Testing JS...
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>💾 Storage</h3>
+                <div class="status-item">
+                    <span class="status-label">localStorage</span>
+                    <span class="status-value" id="storage-status">Testing...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">sessionStorage</span>
+                    <span class="status-value" id="session-status">Testing...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">IndexedDB</span>
+                    <span class="status-value" id="indexeddb-status">Testing...</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>🔧 Browser Features</h3>
+                <div class="status-item">
+                    <span class="status-label">Service Worker</span>
+                    <span class="status-value" id="sw-status">Testing...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Camera API</span>
+                    <span class="status-value" id="camera-status">Testing...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Geolocation</span>
+                    <span class="status-value" id="geo-status">Testing...</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-links">
+            <h3>🚀 Quick Access</h3>
+            <div class="links-grid">
+                <a href="login.html" class="link-btn">🔐 Login Page</a>
+                <a href="index.html" class="link-btn">🏠 Main App</a>
+                <a href="debug.html" class="link-btn">🔍 Debug Page</a>
+                <a href="test.html" class="link-btn">🧪 Test Page</a>
+                <a href="simple-test.html" class="link-btn">📋 Simple Test</a>
+                <a href="manifest.json" class="link-btn">📱 App Manifest</a>
+            </div>
+            <button class="refresh-btn" onclick="location.reload()">🔄 Refresh Status</button>
+        </div>
+        
+        <div class="status-card">
+            <h3>📊 Console Output</h3>
+            <div class="console-output" id="console-output">
+                > GymSense System Status Check Started...<br>
+                > Checking server connectivity...<br>
+                > Testing file accessibility...<br>
+                > Validating browser features...<br>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🏋️ GymSense Status Page Loaded');
+        
+        const log = (message) => {
+            console.log(message);
+            const output = document.getElementById('console-output');
+            output.innerHTML += `> ${message}<br>`;
+            output.scrollTop = output.scrollHeight;
+        };
+        
+        // Test server response time
+        async function testServerResponse() {
+            const start = Date.now();
+            try {
+                await fetch(window.location.href);
+                const time = Date.now() - start;
+                document.getElementById('response-time').textContent = `${time}ms`;
+                document.getElementById('response-time').className = 'status-value status-ok';
+                log(`Server response time: ${time}ms`);
+            } catch (error) {
+                document.getElementById('response-time').textContent = 'Error';
+                document.getElementById('response-time').className = 'status-value status-error';
+                log(`Server response error: ${error.message}`);
+            }
+        }
+        
+        // Test file accessibility
+        async function testFiles() {
+            const files = [
+                'styles/main.css',
+                'styles/auth.css',
+                'styles/mobile.css',
+                'styles/analytics.css',
+                'js/auth.js',
+                'js/app.js',
+                'js/analytics.js',
+                'js/theme-manager.js',
+                'manifest.json'
+            ];
+            
+            let html = '';
+            let allOk = true;
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value status-ok">✅ OK</span></div>`;
+                        log(`✅ ${file} - OK`);
+                    } else {
+                        html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value status-error">❌ ${response.status}</span></div>`;
+                        log(`❌ ${file} - Error ${response.status}`);
+                        allOk = false;
+                    }
+                } catch (error) {
+                    html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value status-error">❌ Failed</span></div>`;
+                    log(`❌ ${file} - ${error.message}`);
+                    allOk = false;
+                }
+            }
+            
+            document.getElementById('file-status').innerHTML = html;
+            log(allOk ? 'All files accessible' : 'Some files have issues');
+        }
+        
+        // Test CSS loading
+        async function testCSS() {
+            const cssFiles = [
+                'styles/main.css',
+                'styles/auth.css',
+                'styles/mobile.css',
+                'styles/analytics.css'
+            ];
+            
+            let html = '';
+            let allOk = true;
+            
+            for (const file of cssFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        const text = await response.text();
+                        const hasContent = text.length > 100;
+                        html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value ${hasContent ? 'status-ok' : 'status-warning'}">${hasContent ? '✅ Loaded' : '⚠️ Small'}</span></div>`;
+                        log(`${hasContent ? '✅' : '⚠️'} ${file} - ${text.length} bytes`);
+                    } else {
+                        html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value status-error">❌ Error</span></div>`;
+                        allOk = false;
+                    }
+                } catch (error) {
+                    html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value status-error">❌ Failed</span></div>`;
+                    allOk = false;
+                }
+            }
+            
+            document.getElementById('css-status').innerHTML = html;
+        }
+        
+        // Test JavaScript loading
+        async function testJS() {
+            const jsFiles = [
+                'js/theme-manager.js',
+                'js/auth.js',
+                'js/app.js',
+                'js/analytics.js'
+            ];
+            
+            let html = '';
+            
+            for (const file of jsFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        const text = await response.text();
+                        const hasContent = text.length > 100;
+                        html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value ${hasContent ? 'status-ok' : 'status-warning'}">${hasContent ? '✅ Loaded' : '⚠️ Small'}</span></div>`;
+                        log(`${hasContent ? '✅' : '⚠️'} ${file} - ${text.length} bytes`);
+                    } else {
+                        html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value status-error">❌ Error</span></div>`;
+                    }
+                } catch (error) {
+                    html += `<div class="status-item"><span class="status-label">${file}</span><span class="status-value status-error">❌ Failed</span></div>`;
+                }
+            }
+            
+            document.getElementById('js-status').innerHTML = html;
+        }
+        
+        // Test storage
+        function testStorage() {
+            // localStorage
+            try {
+                localStorage.setItem('test', 'value');
+                localStorage.removeItem('test');
+                document.getElementById('storage-status').textContent = '✅ Working';
+                document.getElementById('storage-status').className = 'status-value status-ok';
+                log('✅ localStorage working');
+            } catch (error) {
+                document.getElementById('storage-status').textContent = '❌ Error';
+                document.getElementById('storage-status').className = 'status-value status-error';
+                log(`❌ localStorage error: ${error.message}`);
+            }
+            
+            // sessionStorage
+            try {
+                sessionStorage.setItem('test', 'value');
+                sessionStorage.removeItem('test');
+                document.getElementById('session-status').textContent = '✅ Working';
+                document.getElementById('session-status').className = 'status-value status-ok';
+                log('✅ sessionStorage working');
+            } catch (error) {
+                document.getElementById('session-status').textContent = '❌ Error';
+                document.getElementById('session-status').className = 'status-value status-error';
+                log(`❌ sessionStorage error: ${error.message}`);
+            }
+            
+            // IndexedDB
+            if ('indexedDB' in window) {
+                document.getElementById('indexeddb-status').textContent = '✅ Available';
+                document.getElementById('indexeddb-status').className = 'status-value status-ok';
+                log('✅ IndexedDB available');
+            } else {
+                document.getElementById('indexeddb-status').textContent = '❌ Not Available';
+                document.getElementById('indexeddb-status').className = 'status-value status-error';
+                log('❌ IndexedDB not available');
+            }
+        }
+        
+        // Test browser features
+        function testBrowserFeatures() {
+            // Service Worker
+            if ('serviceWorker' in navigator) {
+                document.getElementById('sw-status').textContent = '✅ Supported';
+                document.getElementById('sw-status').className = 'status-value status-ok';
+                log('✅ Service Worker supported');
+            } else {
+                document.getElementById('sw-status').textContent = '❌ Not Supported';
+                document.getElementById('sw-status').className = 'status-value status-error';
+                log('❌ Service Worker not supported');
+            }
+            
+            // Camera API
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                document.getElementById('camera-status').textContent = '✅ Supported';
+                document.getElementById('camera-status').className = 'status-value status-ok';
+                log('✅ Camera API supported');
+            } else {
+                document.getElementById('camera-status').textContent = '❌ Not Supported';
+                document.getElementById('camera-status').className = 'status-value status-error';
+                log('❌ Camera API not supported');
+            }
+            
+            // Geolocation
+            if ('geolocation' in navigator) {
+                document.getElementById('geo-status').textContent = '✅ Supported';
+                document.getElementById('geo-status').className = 'status-value status-ok';
+                log('✅ Geolocation supported');
+            } else {
+                document.getElementById('geo-status').textContent = '❌ Not Supported';
+                document.getElementById('geo-status').className = 'status-value status-error';
+                log('❌ Geolocation not supported');
+            }
+        }
+        
+        // Run all tests
+        async function runAllTests() {
+            log('Starting comprehensive system check...');
+            
+            await testServerResponse();
+            await testFiles();
+            await testCSS();
+            await testJS();
+            testStorage();
+            testBrowserFeatures();
+            
+            log('System check completed!');
+            log('If all tests pass, GymSense should work correctly.');
+            log('If you see errors, check the troubleshooting guide.');
+        }
+        
+        // Start tests when page loads
+        runAllTests();
+        
+        // Update timestamp
+        setInterval(() => {
+            const now = new Date().toLocaleTimeString();
+            log(`Status updated at ${now}`);
+        }, 30000); // Every 30 seconds
+    </script>
+</body>
+</html>

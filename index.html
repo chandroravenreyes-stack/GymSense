@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymSense - Your AR Gym Companion</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/mobile.css">
+    <link rel="stylesheet" href="styles/analytics.css">
+    <link rel="icon" type="image/svg+xml" href="assets/images/bodybuilder-barbell-logo.svg">
+    <link rel="apple-touch-icon" href="assets/images/bodybuilder-barbell-logo.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#556B2F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  
+    <button id="theme-toggle" class="theme-toggle" title="Toggle Dark/Light Mode">
+        🌙
+    </button>
+
+
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="logo">
+                <img src="assets/images/bodybuilder-barbell-logo.svg" alt="GymSense" style="width: 120px; height: 120px;">
+            </div>
+            <div class="loading-spinner"></div>
+            <p>Initializing your gym companion...</p>
+        </div>
+    </div>
+
+ 
+    <div id="app" class="app-container" style="display: none;">
+     
+        
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <img src="assets/images/bodybuilder-barbell-logo.svg" alt="GymSense" style="width: 32px; height: 32px; vertical-align: middle; margin-right: 8px;">
+                    GymSense
+                </h1>
+                <div class="user-info">
+                    <span id="user-name">Welcome, Beginner!</span>
+                    <button id="profile-btn" class="profile-btn">👤</button>
+                    <button id="logout-btn" class="logout-btn" title="Logout">🚪</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-screen="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-btn" data-screen="scanner">
+                <span class="nav-icon">📷</span>
+                <span class="nav-label">AR Scanner</span>
+            </button>
+            <button class="nav-btn" data-screen="workouts">
+                <span class="nav-icon">💪</span>
+                <span class="nav-label">Workouts</span>
+            </button>
+            <button class="nav-btn" data-screen="progress">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Progress</span>
+            </button>
+        </nav>
+
+        <!-- Screen Container -->
+        <main class="screen-container">
+            <!-- Home Screen -->
+            <div id="home-screen" class="screen active">
+                <div class="welcome-section">
+                    <h2>Ready to conquer the gym?</h2>
+                    <p>Use AR to identify equipment and get personalized workout recommendations!</p>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="action-card" id="quick-scan">
+                        <div class="action-icon">📷</div>
+                        <h3>Quick Scan</h3>
+                        <p>Point your camera at gym equipment</p>
+                    </button>
+                    
+                    <button class="action-card" id="daily-workout">
+                        <div class="action-icon">🎯</div>
+                        <h3>Daily Workout</h3>
+                        <p>Get your personalized routine</p>
+                    </button>
+                </div>
+
+                <div class="stats-overview">
+                    <h3>Your Progress</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number" id="workouts-completed">0</span>
+                            <span class="stat-label">Workouts</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="equipment-learned">0</span>
+                            <span class="stat-label">Equipment Learned</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="streak-days">0</span>
+                            <span class="stat-label">Day Streak</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AR Scanner Screen -->
+            <div id="scanner-screen" class="screen">
+                <div class="scanner-container">
+                    <div class="camera-view">
+                        <video id="camera-feed" autoplay playsinline></video>
+                        <canvas id="detection-overlay"></canvas>
+                        <div class="scanner-ui">
+                            <div class="scan-frame"></div>
+                            <div class="scan-instructions">
+                                <p>Point your camera at gym equipment</p>
+                                <div class="scan-status" id="scan-status">Looking for equipment...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="scanner-controls">
+                        <button id="toggle-camera" class="control-btn">📷 Toggle Camera</button>
+                        <button id="simulate-detection" class="control-btn simulate-btn">🎯 Simulate Detection</button>
+                    </div>
+                </div>
+
+                <!-- Equipment Detection Result -->
+                <div id="detection-result" class="detection-result" style="display: none;">
+                    <div class="result-content">
+                        <div class="result-header">
+                            <h3 id="detected-equipment">Equipment Detected!</h3>
+                            <button id="close-result" class="close-btn">✕</button>
+                        </div>
+                        <div class="equipment-info">
+                            <img id="equipment-image" src="assets/images/placeholder.jpg" alt="Equipment">
+                            <div class="equipment-details">
+                                <h4 id="equipment-name"></h4>
+                                <p id="equipment-description"></p>
+                                <div class="difficulty-level">
+                                    <span>Difficulty: </span>
+                                    <span id="equipment-difficulty" class="difficulty-badge"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recommended-exercises">
+                            <h4>Recommended Exercises:</h4>
+                            <div id="exercise-list" class="exercise-list"></div>
+                        </div>
+                        <button id="start-workout" class="primary-btn">Start Workout</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workouts Screen -->
+            <div id="workouts-screen" class="screen">
+                <div class="workout-header">
+                    <h2>Your Workouts</h2>
+                    <button id="create-workout" class="primary-btn">Create New Workout</button>
+                </div>
+
+                <div class="workout-categories">
+                    <button class="category-btn active" data-category="all">All</button>
+                    <button class="category-btn" data-category="beginner">Beginner</button>
+                    <button class="category-btn" data-category="strength">Strength</button>
+                    <button class="category-btn" data-category="cardio">Cardio</button>
+                </div>
+
+                <div id="workout-list" class="workout-list">
+                    <!-- Workouts will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Progress Screen -->
+            <div id="progress-screen" class="screen">
+                <div class="progress-header">
+                    <h2>Your Progress</h2>
+                    <div class="progress-period">
+                        <button class="period-btn active" data-period="week">Week</button>
+                        <button class="period-btn" data-period="month">Month</button>
+                        <button class="period-btn" data-period="year">Year</button>
+                    </div>
+                </div>
+
+                <div class="progress-stats">
+                    <div class="progress-card">
+                        <h3>Workout Streak</h3>
+                        <div class="streak-display">
+                            <span class="streak-number">0</span>
+                            <span class="streak-label">days</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-card">
+                        <h3>Equipment Mastered</h3>
+                        <div class="mastery-grid" id="mastery-grid">
+                            <!-- Equipment mastery will be populated -->
+                        </div>
+                    </div>
+
+                    <div class="progress-card">
+                        <h3>Recent Achievements</h3>
+                        <div id="achievements-list" class="achievements-list">
+                            <!-- Achievements will be populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- User Profile Modal -->
+        <div id="profile-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>User Profile</h3>
+                    <button id="close-profile" class="close-btn">✕</button>
+                </div>
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label for="user-name-input">Name:</label>
+                        <input type="text" id="user-name-input" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="fitness-level">Fitness Level:</label>
+                        <select id="fitness-level">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fitness-goals">Primary Goal:</label>
+                        <select id="fitness-goals">
+                            <option value="weight-loss">Weight Loss</option>
+                            <option value="muscle-gain">Muscle Gain</option>
+                            <option value="endurance">Endurance</option>
+                            <option value="general-fitness">General Fitness</option>
+                        </select>
+                    </div>
+                    <button id="save-profile" class="primary-btn">Save Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/theme-manager.js"></script>
+    <script src="js/equipment-database.js"></script>
+    <script src="js/user-profile.js"></script>
+    <script src="js/ar-simulator.js"></script>
+    <script src="js/recommendations.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

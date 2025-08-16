@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymSense - Login</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link rel="icon" type="image/svg+xml" href="assets/images/bodybuilder-barbell-logo.svg">
+    <link rel="apple-touch-icon" href="assets/images/bodybuilder-barbell-logo.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#556B2F">
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" class="theme-toggle" title="Toggle Dark/Light Mode">
+        🌙
+    </button>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Logo Section -->
+            <div class="auth-logo">
+                <div class="logo-icon">
+                    <img src="assets/images/bodybuilder-barbell-logo.svg" alt="GymSense" style="width: 80px; height: 80px;">
+                </div>
+                <h1>GymSense</h1>
+                <p class="tagline">Your AI-Powered Gym Companion</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form active">
+                <h2>Welcome Back!</h2>
+                <p class="form-subtitle">Sign in to continue your fitness journey</p>
+                
+                <form id="login-form-element">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="remember-me">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn primary">Sign In</button>
+                </form>
+                
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+                
+                <button id="guest-login" class="auth-btn secondary">
+                    <span class="btn-icon">👤</span>
+                    Continue as Guest
+                </button>
+                
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="#" id="show-register">Sign Up</a></p>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="register-form" class="auth-form">
+                <h2>Join GymSense!</h2>
+                <p class="form-subtitle">Create your account to get personalized workouts</p>
+                
+                <form id="register-form-element">
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" placeholder="Create a password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="agree-terms" required>
+                            <span class="checkmark"></span>
+                            I agree to the <a href="#" class="terms-link">Terms & Conditions</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn primary">Create Account</button>
+                </form>
+                
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="#" id="show-login">Sign In</a></p>
+                </div>
+            </div>
+
+            <!-- User Information Form (for new users and guests) -->
+            <div id="user-info-form" class="auth-form">
+                <h2>Tell Us About Yourself</h2>
+                <p class="form-subtitle">Help us create the perfect workout plan for you</p>
+                
+                <form id="user-info-form-element">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-age">Age</label>
+                            <input type="number" id="user-age" placeholder="25" min="13" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="user-gender">Gender</label>
+                            <select id="user-gender">
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-height">Height</label>
+                            <input type="number" id="user-height" placeholder="170" min="100" max="250">
+                            <small>cm</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-weight">Weight</label>
+                            <input type="number" id="user-weight" placeholder="70" min="30" max="300">
+                            <small>kg</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fitness-level">Current Fitness Level</label>
+                        <select id="fitness-level" required>
+                            <option value="">Select your level</option>
+                            <option value="beginner">Beginner - New to exercise</option>
+                            <option value="intermediate">Intermediate - Some experience</option>
+                            <option value="advanced">Advanced - Very experienced</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="primary-goal">Primary Fitness Goal</label>
+                        <select id="primary-goal" required>
+                            <option value="">Select your main goal</option>
+                            <option value="weight-loss">Weight Loss</option>
+                            <option value="muscle-gain">Build Muscle</option>
+                            <option value="endurance">Improve Endurance</option>
+                            <option value="strength">Increase Strength</option>
+                            <option value="flexibility">Improve Flexibility</option>
+                            <option value="general-fitness">General Fitness</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workout-frequency">How often do you want to workout?</label>
+                        <select id="workout-frequency">
+                            <option value="1-2">1-2 times per week</option>
+                            <option value="3-4" selected>3-4 times per week</option>
+                            <option value="5-6">5-6 times per week</option>
+                            <option value="daily">Daily</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workout-duration">Preferred workout duration</label>
+                        <select id="workout-duration">
+                            <option value="15">15 minutes</option>
+                            <option value="30" selected>30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                            <option value="90">90+ minutes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Any injuries or limitations?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="limitations" value="knee">
+                                <span class="checkmark"></span>
+                                Knee problems
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="limitations" value="back">
+                                <span class="checkmark"></span>
+                                Back problems
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="limitations" value="shoulder">
+                                <span class="checkmark"></span>
+                                Shoulder problems
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="limitations" value="none">
+                                <span class="checkmark"></span>
+                                No limitations
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn primary">Start My Fitness Journey</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="auth-loading" class="auth-loading" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Setting up your personalized experience...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/theme-manager.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymSense Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 GymSense Debug Page</h1>
+    
+    <div class="debug-section">
+        <h2>File Loading Test</h2>
+        <div id="file-test-results">Testing files...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>JavaScript Console</h2>
+        <div id="console-output">
+            <p>Check browser console (F12) for detailed logs</p>
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Quick Links</h2>
+        <p><a href="login.html" target="_blank">Open Login Page</a></p>
+        <p><a href="index.html" target="_blank">Open Main App</a></p>
+        <p><a href="test.html" target="_blank">Open Test Page</a></p>
+    </div>
+
+    <script>
+        console.log('🔍 Starting GymSense Debug...');
+        
+        // Test file loading
+        const filesToTest = [
+            'styles/main.css',
+            'styles/auth.css',
+            'styles/mobile.css',
+            'styles/analytics.css',
+            'js/auth.js',
+            'js/app.js',
+            'js/analytics.js',
+            'js/theme-manager.js',
+            'js/equipment-database.js',
+            'js/user-profile.js',
+            'js/ar-simulator.js',
+            'js/recommendations.js',
+            'manifest.json'
+        ];
+        
+        const testResults = document.getElementById('file-test-results');
+        let results = '<h3>File Loading Results:</h3>';
+        
+        async function testFiles() {
+            for (const file of filesToTest) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        const size = response.headers.get('content-length') || 'unknown';
+                        results += `<div class="success">✅ ${file} - OK (${size} bytes)</div>`;
+                        console.log(`✅ ${file} loaded successfully`);
+                    } else {
+                        results += `<div class="error">❌ ${file} - Error: ${response.status}</div>`;
+                        console.error(`❌ ${file} failed: ${response.status}`);
+                    }
+                } catch (error) {
+                    results += `<div class="error">❌ ${file} - Failed: ${error.message}</div>`;
+                    console.error(`❌ ${file} error:`, error);
+                }
+                
+                testResults.innerHTML = results;
+                await new Promise(resolve => setTimeout(resolve, 100)); // Small delay for visual effect
+            }
+            
+            results += '<h3>Test Complete!</h3>';
+            testResults.innerHTML = results;
+            
+            // Test JavaScript loading
+            setTimeout(() => {
+                testJavaScript();
+            }, 1000);
+        }
+        
+        function testJavaScript() {
+            console.log('🧪 Testing JavaScript components...');
+            
+            const jsTests = [
+                { name: 'GymSenseTheme', obj: window.GymSenseTheme },
+                { name: 'GymSenseAuth', obj: window.GymSenseAuth },
+                { name: 'GymSenseEquipment', obj: window.GymSenseEquipment },
+                { name: 'GymSenseProfile', obj: window.GymSenseProfile },
+                { name: 'GymSenseAR', obj: window.GymSenseAR },
+                { name: 'GymSenseRecommendations', obj: window.GymSenseRecommendations },
+                { name: 'GymSenseAnalytics', obj: window.GymSenseAnalytics },
+                { name: 'GymSenseApp', obj: window.GymSenseApp }
+            ];
+            
+            let jsResults = '<h3>JavaScript Components:</h3>';
+            
+            jsTests.forEach(test => {
+                if (test.obj) {
+                    jsResults += `<div class="success">✅ ${test.name} - Loaded</div>`;
+                    console.log(`✅ ${test.name} available`);
+                } else {
+                    jsResults += `<div class="error">❌ ${test.name} - Not found</div>`;
+                    console.log(`❌ ${test.name} not available`);
+                }
+            });
+            
+            testResults.innerHTML += jsResults;
+        }
+        
+        // Start testing
+        testFiles();
+        
+        // Log current URL and server info
+        console.log('Current URL:', window.location.href);
+        console.log('Server should be running on: http://localhost:8080');
+        
+        // Test localStorage
+        try {
+            localStorage.setItem('test', 'value');
+            localStorage.removeItem('test');
+            console.log('✅ localStorage working');
+        } catch (error) {
+            console.error('❌ localStorage error:', error);
+        }
+    </script>
+</body>
+</html>

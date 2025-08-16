@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymSense - Server Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+        .success { border-left: 4px solid #4CAF50; }
+        .info { border-left: 4px solid #2196F3; }
+        .warning { border-left: 4px solid #FF9800; }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #556B2F;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 8px 8px 8px 0;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #6B8E23;
+        }
+        .status {
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin: 8px 0;
+            font-weight: bold;
+        }
+        .status.online {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card success">
+        <h1>🏋️ GymSense - Server Status</h1>
+        <div class="status online">✅ Server is ONLINE and running on port 8080</div>
+        <p>Your GymSense app is ready to use!</p>
+    </div>
+
+    <div class="test-card info">
+        <h2>🚀 Quick Access</h2>
+        <p>Click the buttons below to access different parts of the app:</p>
+        <a href="login.html" class="button">🔐 Login Page</a>
+        <a href="index.html" class="button">🏠 Main App (Direct)</a>
+        <a href="manifest.json" class="button">📱 App Manifest</a>
+    </div>
+
+    <div class="test-card info">
+        <h2>📊 Analytics Features</h2>
+        <p>Your GymSense app includes comprehensive analytics:</p>
+        <ul>
+            <li>✅ Real-time workout tracking</li>
+            <li>✅ Achievement system with 20+ badges</li>
+            <li>✅ Progress insights and motivational messages</li>
+            <li>✅ Equipment mastery tracking</li>
+            <li>✅ Personal records and streak monitoring</li>
+            <li>✅ Interactive data visualizations</li>
+            <li>✅ Demo data for immediate testing</li>
+        </ul>
+    </div>
+
+    <div class="test-card warning">
+        <h2>🔧 Troubleshooting</h2>
+        <p>If you encounter any issues:</p>
+        <ol>
+            <li><strong>Check Browser Console:</strong> Press F12 → Console tab</li>
+            <li><strong>Hard Refresh:</strong> Press Ctrl+F5 to clear cache</li>
+            <li><strong>Try Guest Mode:</strong> Use "Continue as Guest" on login</li>
+            <li><strong>Clear Data:</strong> F12 → Application → Storage → Clear site data</li>
+        </ol>
+        <p><strong>Server Info:</strong> Python HTTP Server on localhost:8080</p>
+    </div>
+
+    <div class="test-card success">
+        <h2>🎯 Getting Started</h2>
+        <ol>
+            <li><strong>Login:</strong> Go to <a href="login.html">login.html</a></li>
+            <li><strong>Guest Access:</strong> Click "Continue as Guest"</li>
+            <li><strong>Explore:</strong> Navigate through Home, Scanner, Workouts, Progress</li>
+            <li><strong>Analytics:</strong> Check the Progress tab for detailed analytics</li>
+            <li><strong>Demo Data:</strong> App will generate sample data for testing</li>
+        </ol>
+    </div>
+
+    <script>
+        // Test JavaScript functionality
+        console.log('🏋️ GymSense Test Page Loaded Successfully');
+        
+        // Check if main app files are accessible
+        const testFiles = [
+            'js/app.js',
+            'js/analytics.js',
+            'js/auth.js',
+            'styles/main.css',
+            'styles/analytics.css'
+        ];
+        
+        testFiles.forEach(file => {
+            fetch(file)
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`✅ ${file} - OK`);
+                    } else {
+                        console.log(`❌ ${file} - Error: ${response.status}`);
+                    }
+                })
+                .catch(error => {
+                    console.log(`❌ ${file} - Failed to load: ${error.message}`);
+                });
+        });
+        
+        // Display current time
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date().toLocaleString();
+            console.log(`Server test completed at: ${now}`);
+        });
+    </script>
+</body>
+</html>

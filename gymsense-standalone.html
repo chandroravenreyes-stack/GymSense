@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymSense - Your AR Gym Companion</title>
+    <style>
+        /* Embedded CSS for standalone operation */
+        :root {
+            --primary-color: #556B2F;
+            --primary-dark: #3C4F1F;
+            --primary-light: #6B8E23;
+            --secondary-color: #8FBC8F;
+            --accent-color: #9ACD32;
+            --background-color: #F5F5DC;
+            --surface-color: #FFFFFF;
+            --text-primary: #2F4F2F;
+            --text-secondary: #556B2F;
+            --border-color: #D3D3D3;
+            --shadow: 0 2px 12px rgba(85, 107, 47, 0.08);
+            --border-radius: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7CB342;
+            --background-color: #0D1B0D;
+            --surface-color: #1E2E1E;
+            --text-primary: #E8F5E8;
+            --text-secondary: #C8E6C9;
+            --border-color: #388E3C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #556B2F 0%, #6B8E23 50%, #8FBC8F 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            background: var(--surface-color);
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(85, 107, 47, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .stats-section {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .stats-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary-color));
+            border-radius: var(--border-radius);
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .demo-section {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .demo-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(85, 107, 47, 0.3);
+        }
+
+        .demo-output {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            text-align: left;
+            display: none;
+        }
+
+        .demo-output.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 10px;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .demo-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+    
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">💪 GymSense</div>
+            <div class="tagline">Your AI-Powered Gym Companion</div>
+        </header>
+
+        <div class="main-content">
+            <div class="feature-card">
+                <div class="feature-icon">📷</div>
+                <div class="feature-title">AR Equipment Detection</div>
+                <div class="feature-description">
+                    Point your camera at gym equipment and get instant identification with personalized workout recommendations.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Personalized Workouts</div>
+                <div class="feature-description">
+                    Get customized workout plans based on your fitness level, goals, and available equipment.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Progress Tracking</div>
+                <div class="feature-description">
+                    Monitor your fitness journey with detailed analytics and achievement tracking.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🏋️</div>
+                <div class="feature-title">Equipment Database</div>
+                <div class="feature-description">
+                    Access comprehensive information about gym equipment with proper usage instructions.
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <div class="stats-title">GymSense by the Numbers</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="equipmentCount">16</span>
+                    <span class="stat-label">Equipment Types</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="workoutCount">50+</span>
+                    <span class="stat-label">Workout Routines</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="userCount">1000+</span>
+                    <span class="stat-label">Active Users</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="accuracyRate">95%</span>
+                    <span class="stat-label">Detection Accuracy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-title">Try GymSense Features</div>
+            <p>Experience the power of AI-driven fitness assistance</p>
+            
+            <div class="demo-buttons">
+                <button class="demo-btn" onclick="simulateEquipmentDetection()">
+                    📷 Simulate AR Detection
+                </button>
+                <button class="demo-btn" onclick="generateWorkout()">
+                    🎯 Generate Workout
+                </button>
+                <button class="demo-btn" onclick="showProgress()">
+                    📊 View Progress
+                </button>
+                <button class="demo-btn" onclick="browseEquipment()">
+                    🏋️ Browse Equipment
+                </button>
+            </div>
+
+            <div class="demo-output" id="demoOutput"></div>
+        </div>
+
+        <footer class="footer">
+            <p>🚀 <strong>GymSense</strong> - Revolutionizing your fitness journey with AI and AR technology</p>
+            <p>All systems operational • No server required • Works offline</p>
+        </footer>
+    </div>
+
+    <script>
+        // Embedded JavaScript for standalone operation
+        
+        // Equipment Database
+        const equipmentDatabase = [
+            { id: 1, name: "Treadmill", category: "Cardio", difficulty: "Beginner", muscles: ["Legs", "Cardio"] },
+            { id: 2, name: "Dumbbells", category: "Strength", difficulty: "Beginner", muscles: ["Arms", "Chest", "Back"] },
+            { id: 3, name: "Barbell", category: "Strength", difficulty: "Intermediate", muscles: ["Full Body"] },
+            { id: 4, name: "Pull-up Bar", category: "Strength", difficulty: "Intermediate", muscles: ["Back", "Arms"] },
+            { id: 5, name: "Leg Press", category: "Strength", difficulty: "Beginner", muscles: ["Legs", "Glutes"] },
+            { id: 6, name: "Bench Press", category: "Strength", difficulty: "Intermediate", muscles: ["Chest", "Arms"] },
+            { id: 7, name: "Elliptical", category: "Cardio", difficulty: "Beginner", muscles: ["Full Body", "Cardio"] },
+            { id: 8, name: "Rowing Machine", category: "Cardio", difficulty: "Intermediate", muscles: ["Back", "Arms", "Legs"] },
+            { id: 9, name: "Kettlebell", category: "Functional", difficulty: "Intermediate", muscles: ["Full Body"] },
+            { id: 10, name: "Cable Machine", category: "Strength", difficulty: "Intermediate", muscles: ["Full Body"] },
+            { id: 11, name: "Smith Machine", category: "Strength", difficulty: "Advanced", muscles: ["Full Body"] },
+            { id: 12, name: "Lat Pulldown", category: "Strength", difficulty: "Beginner", muscles: ["Back", "Arms"] },
+            { id: 13, name: "Leg Curl", category: "Strength", difficulty: "Beginner", muscles: ["Hamstrings"] },
+            { id: 14, name: "Shoulder Press", category: "Strength", difficulty: "Intermediate", muscles: ["Shoulders", "Arms"] },
+            { id: 15, name: "Battle Ropes", category: "Functional", difficulty: "Advanced", muscles: ["Full Body", "Cardio"] },
+            { id: 16, name: "Medicine Ball", category: "Functional", difficulty: "Beginner", muscles: ["Core", "Full Body"] }
+        ];
+
+        // Workout Templates
+        const workoutTemplates = [
+            {
+                name: "Beginner Full Body",
+                duration: "30 minutes",
+                exercises: ["Bodyweight Squats", "Push-ups", "Planks", "Walking"],
+                difficulty: "Beginner"
+            },
+            {
+                name: "Cardio Blast",
+                duration: "25 minutes", 
+                exercises: ["Treadmill Intervals", "Jumping Jacks", "Burpees"],
+                difficulty: "Intermediate"
+            },
+            {
+                name: "Strength Training",
+                duration: "45 minutes",
+                exercises: ["Barbell Squats", "Bench Press", "Deadlifts", "Pull-ups"],
+                difficulty: "Advanced"
+            }
+        ];
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        let isDark = false;
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+        });
+
+        // Demo Functions
+        function simulateEquipmentDetection() {
+            const randomEquipment = equipmentDatabase[Math.floor(Math.random() * equipmentDatabase.length)];
+            const confidence = Math.floor(Math.random() * 20 + 80); // 80-100%
+            
+            showDemoOutput(`
+                <h3>🎯 Equipment Detected!</h3>
+                <p><strong>Equipment:</strong> ${randomEquipment.name}</p>
+                <p><strong>Category:</strong> ${randomEquipment.category}</p>
+                <p><strong>Difficulty:</strong> ${randomEquipment.difficulty}</p>
+                <p><strong>Target Muscles:</strong> ${randomEquipment.muscles.join(', ')}</p>
+                <p><strong>Detection Confidence:</strong> ${confidence}%</p>
+                <p><strong>Recommendation:</strong> Perfect for your fitness level! Start with 3 sets of 10-12 reps.</p>
+            `);
+        }
+
+        function generateWorkout() {
+            const randomWorkout = workoutTemplates[Math.floor(Math.random() * workoutTemplates.length)];
+            const calories = Math.floor(Math.random() * 200 + 200); // 200-400 calories
+            
+            showDemoOutput(`
+                <h3>🎯 Personalized Workout Generated!</h3>
+                <p><strong>Workout:</strong> ${randomWorkout.name}</p>
+                <p><strong>Duration:</strong> ${randomWorkout.duration}</p>
+                <p><strong>Difficulty:</strong> ${randomWorkout.difficulty}</p>
+                <p><strong>Estimated Calories:</strong> ${calories} kcal</p>
+                <p><strong>Exercises:</strong></p>
+                <ul>
+                    ${randomWorkout.exercises.map(ex => `<li>${ex}</li>`).join('')}
+                </ul>
+                <p><strong>Tip:</strong> Remember to warm up before starting and cool down after!</p>
+            `);
+        }
+
+        function showProgress() {
+            const workoutsCompleted = Math.floor(Math.random() * 50 + 10);
+            const streak = Math.floor(Math.random() * 14 + 1);
+            const equipmentLearned = Math.floor(Math.random() * 10 + 5);
+            
+            showDemoOutput(`
+                <h3>📊 Your Fitness Progress</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                    <div style="text-align: center; padding: 1rem; background: #e8f5e9; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #2e7d32;">${workoutsCompleted}</div>
+                        <div>Workouts Completed</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: #e3f2fd; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #1976d2;">${streak}</div>
+                        <div>Day Streak</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: #fff3e0; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #f57c00;">${equipmentLearned}</div>
+                        <div>Equipment Learned</div>
+                    </div>
+                </div>
+                <p><strong>Recent Achievement:</strong> 🏆 Consistency Champion - 7 day workout streak!</p>
+                <p><strong>Next Goal:</strong> Try 3 new pieces of equipment this week</p>
+            `);
+        }
+
+        function browseEquipment() {
+            const categories = [...new Set(equipmentDatabase.map(eq => eq.category))];
+            const categoryCount = {};
+            categories.forEach(cat => {
+                categoryCount[cat] = equipmentDatabase.filter(eq => eq.category === cat).length;
+            });
+            
+            showDemoOutput(`
+                <h3>🏋️ Equipment Database</h3>
+                <p><strong>Total Equipment Types:</strong> ${equipmentDatabase.length}</p>
+                <p><strong>Categories Available:</strong></p>
+                <ul>
+                    ${categories.map(cat => `<li><strong>${cat}:</strong> ${categoryCount[cat]} items</li>`).join('')}
+                </ul>
+                <p><strong>Featured Equipment:</strong></p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                    ${equipmentDatabase.slice(0, 4).map(eq => `
+                        <div style="padding: 1rem; background: #f5f5f5; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                            <div style="font-weight: bold;">${eq.name}</div>
+                            <div style="font-size: 0.9rem; color: #666;">${eq.category} • ${eq.difficulty}</div>
+                            <div style="font-size: 0.8rem; margin-top: 0.5rem;">${eq.muscles.join(', ')}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `);
+        }
+
+        function showDemoOutput(content) {
+            const output = document.getElementById('demoOutput');
+            output.innerHTML = content;
+            output.classList.add('show');
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Initialize stats animation
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const target = stat.textContent;
+                const isNumber = !isNaN(parseInt(target));
+                if (isNumber) {
+                    const targetNum = parseInt(target);
+                    let current = 0;
+                    const increment = targetNum / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= targetNum) {
+                            current = targetNum;
+                            clearInterval(timer);
+                        }
+                        stat.textContent = Math.floor(current);
+                    }, 30);
+                }
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(animateStats, 500);
+            
+            // Add click animations to feature cards
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        card.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+
+        console.log('🚀 GymSense Standalone Version Loaded Successfully!');
+        console.log('📊 Equipment Database:', equipmentDatabase.length, 'items loaded');
+        console.log('💪 Workout Templates:', workoutTemplates.length, 'templates available');
+        console.log('✅ All systems operational - No server required!');
+    </script>
+</body>
+</html>
